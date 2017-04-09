@@ -3,72 +3,89 @@ package SMS;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
-import java.util.concurrent.*;
 
-/**
- * Created by Robert on 26/03/2017.
- */
 public class SimView extends JFrame {
 
-    private static final int WIDTH = 800;
+    private static final int WIDTH = 500;
     private static final int HEIGHT = 300;
 
     private JLabel l, no, data;
-    private JButton b;
+    private JButton bSimulation;
+    private PlayHandler bhSim;
 
-    private ButtonHandler bh;
+    private JMenuBar mBar;
+    private JMenu mFile;
+    private JMenuItem mNew, mLoad, mSave, mSaveAs, mExit;
 
-    private int x = 0;
-    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-
+    private JTabbedPane tab;
+    private JPanel tStock, tPortfolio;
 
     // Construct the frame
     public SimView() {
         setTitle("Team-X Stock Market Simulation");
         setSize(WIDTH, HEIGHT);
-        setVisible(true);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setUp();
+        setVisible(true);
     }
 
     // Add contents to frame
     public void setUp() {
         Container pane = getContentPane();
-        pane.setLayout(new GridLayout(4, 2));
-        l = new JLabel("This is a stock market simulation", SwingConstants.CENTER);
-        no = new JLabel(String.valueOf(x), SwingConstants.CENTER);
-        data = new JLabel("You are seeing actual data here", SwingConstants.CENTER);
-        b = new JButton("Start simulation");
-        bh = new ButtonHandler();
-        b.addActionListener(bh);
+        pane.setLayout(new GridLayout(1, 1));
+        GridBagConstraints c = new GridBagConstraints();
 
-        pane.add(l);
-        pane.add(no);
-        pane.add(data);
-        pane.add(b);
+        // Build Menu Bar, Menus and Menu Items
+        mBar = new JMenuBar();
+        mFile = new JMenu("File");
+        mFile.setMnemonic(KeyEvent.VK_F);
+        mNew = new JMenuItem("New Simulation", KeyEvent.VK_N);
+        mFile.add(mNew);
+        mLoad = new JMenuItem("Load Simulation", KeyEvent.VK_L);
+        mFile.add(mLoad);
+        mSave = new JMenuItem("Save Simulation", KeyEvent.VK_S);
+        mFile.add(mSave);
+        mSaveAs = new JMenuItem("Save As Simulation", KeyEvent.VK_A);
+        mFile.add(mSaveAs);
+        mExit = new JMenuItem("Exit program", KeyEvent.VK_X);
+        mExit.addActionListener(e -> System.exit(0));
+        mFile.add(mExit);
+        mBar.add(mFile);
+        setJMenuBar(mBar);
+
+        // Build buttons and actions handlers
+        bSimulation = new JButton("Start Simulation");
+        bhSim = new PlayHandler();
+        bSimulation.addActionListener(bhSim);
+
+        // Build tabs and add components
+        tab = new JTabbedPane();
+        tStock = new JPanel(new BorderLayout());
+        tab.addTab("Stock Market", tStock);
+        tStock.add(bSimulation, BorderLayout.NORTH);
+        tPortfolio = new JPanel(new GridBagLayout());
+        tab.addTab("Portfolio", tPortfolio);
+
+        pane.add(tab);
     }
 
-    private class ButtonHandler implements ActionListener {
+    public AbstractButton getBtnPlay() { return bSimulation; }
+    public AbstractButton getMenuNew() { return mNew; }
+    public AbstractButton getMenuLoad() { return mLoad; }
+    public AbstractButton getMenuSave() { return mSave; }
+    public AbstractButton getMenuSaveAs() { return mSaveAs; }
+
+    private class PlayHandler implements ActionListener {
+        private boolean clicked = false;
+        @Override
         public void actionPerformed(ActionEvent e) {
-            executorService.scheduleAtFixedRate((Runnable) () -> {
-                x += 1;
-                no.setText(String.valueOf(x));
-                if (x == 15){
-                    data.setText("There is really data here...");
-                } else if (x == 30) {
-                    data.setText("You are under an illusion that there is no data here");
-                } else if (x == 45) {
-                    data.setText("Look, Stock Market is done. We can just hand this in! We will get as least 95%");
-                } else if (x == 60) {
-                    data.setText("The other 5% is that no one written an user instruction");
-                } else if (x == 75) {
-                    data.setText("sigh... I quit");
-                } else if (x == 100) {
-                    data.setText("Joking, why would I throw away such good work here!");
-                } else if (x == 125) {
-                    data.setText("This program will hack W&G server... oh wait wrong module! Forget I said anything!");
-                }
-            }, 0, 300, TimeUnit.MILLISECONDS);
+            if (!clicked) {
+                bSimulation.setText("Pause");
+                clicked = true;
+            } else {
+                bSimulation.setText("Play");
+                clicked = false;
+            }
         }
     }
 }
