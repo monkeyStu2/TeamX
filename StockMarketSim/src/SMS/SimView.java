@@ -9,7 +9,6 @@ public class SimView extends JFrame {
     private static final int WIDTH = 500;
     private static final int HEIGHT = 300;
 
-    private JLabel l, no, data;
     private JButton bSimulation;
     private PlayHandler bhSim;
 
@@ -19,6 +18,8 @@ public class SimView extends JFrame {
 
     private JTabbedPane tab;
     private JPanel tStock, tPortfolio;
+
+    private SimGraph lineG;
 
     // Construct the frame
     public SimView() {
@@ -63,6 +64,9 @@ public class SimView extends JFrame {
         tStock = new JPanel(new BorderLayout());
         tab.addTab("Stock Market", tStock);
         tStock.add(bSimulation, BorderLayout.NORTH);
+        lineG = new SimGraph();
+        lineG.addData();
+        tStock.add(lineG, BorderLayout.CENTER);
         tPortfolio = new JPanel(new GridBagLayout());
         tab.addTab("Portfolio", tPortfolio);
 

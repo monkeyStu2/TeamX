@@ -1,4 +1,4 @@
-package SMS;
+/*package SMS;
 
 public class ViewPlay {
     private int x = 0;
@@ -6,4 +6,4 @@ public class ViewPlay {
         System.out.println("Test - " + x);
         x += 1;
     };
-}
+}*/

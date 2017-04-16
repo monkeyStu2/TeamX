@@ -24,7 +24,7 @@ public class Simulation {
 
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                ViewPlay va = new SMS.ViewPlay();
+                ViewPlay va = new ViewPlay();
                 if (!activeCycle) {
                     activeCycle = true;
                     sf = executor.scheduleAtFixedRate(va.play, 0, 1, TimeUnit.SECONDS);
@@ -49,5 +49,13 @@ public class Simulation {
                 System.out.println(newSimFrame.getExternalData());
             }
         });
+    }
+
+    private class ViewPlay {
+        private int x = 0;
+        Runnable play = () -> {
+            System.out.println("Test - " + x);
+            x += 1;
+        };
     }
 }
