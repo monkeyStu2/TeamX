@@ -38,21 +38,21 @@ public class SimViewNew extends JDialog {
 
         // adding components and it actions to InitialFile panel
         lInitial = new JLabel("Initial Data");
-        pInitialFile.add(lInitial, gbcConstraint(2, 1, 0, 0, 0, 0));  // label
+        pInitialFile.add(lInitial, SimView.gbcConstraint(2, 1, 0, 0, 0, 0));  // label
         initialFileAddress = new JTextField("Enter file address here");
-        pInitialFile.add(initialFileAddress, gbcConstraint(3, 1, 0, 1, 1, 0));  // textfield
+        pInitialFile.add(initialFileAddress, SimView.gbcConstraint(3, 1, 0, 1, 1, 0));  // textfield
         bInitFileFind = new JButton("Find");
         bInitFileFind.addActionListener(e -> initialFileAddress.setText(fileChooser()));
-        pInitialFile.add(bInitFileFind, gbcConstraint(1, 1, 3, 1, 0, 0));  // button
+        pInitialFile.add(bInitFileFind, SimView.gbcConstraint(1, 1, 3, 1, 0, 0));  // button
 
         // adding components and it actions to ExternalFile panel
         lExternal = new JLabel("External Event Data");
-        pExternalFile.add(lExternal, gbcConstraint(2, 1, 0, 0, 0, 0));  // label
+        pExternalFile.add(lExternal, SimView.gbcConstraint(2, 1, 0, 0, 0, 0));  // label
         externalFileAddress = new JTextField("Enter file address here");
-        pExternalFile.add(externalFileAddress, gbcConstraint(3, 1, 0, 1, 1, 0));  // textfield
+        pExternalFile.add(externalFileAddress, SimView.gbcConstraint(3, 1, 0, 1, 1, 0));  // textfield
         bExFileFind = new JButton("Find");
         bExFileFind.addActionListener(e -> externalFileAddress.setText(fileChooser()));
-        pExternalFile.add(bExFileFind, gbcConstraint(1, 1, 3, 1, 0, 0));  // button
+        pExternalFile.add(bExFileFind, SimView.gbcConstraint(1, 1, 3, 1, 0, 0));  // button
 
         // adding components and it actions to Options panel
         bExecute = new JButton("Ok");
@@ -65,32 +65,15 @@ public class SimViewNew extends JDialog {
                 }
             }
         });
-        pOptions.add(bExecute, gbcConstraint(2, 1, 0, 0, 0, 0));
+        pOptions.add(bExecute, SimView.gbcConstraint(2, 1, 0, 0, 0, 0));
         bCancel = new JButton("Cancel");
         bCancel.addActionListener(e -> dispose());  // cancel the progress
-        pOptions.add(bCancel, gbcConstraint(2, 1, 2, 0, 0, 0));
+        pOptions.add(bCancel, SimView.gbcConstraint(2, 1, 2, 0, 0, 0));
 
         add(pInitialFile);
         add(pExternalFile);
         add(pOptions);
 
-    }
-
-    /**Set where a component will be placed on a GridBagLayout panel
-     * gridW and gridH set the size of the component on the grid
-     * gridX and gridY set the location of the component on the grid
-     * weightX and weightY set whether the component will fill up the panel or not*/
-    private static GridBagConstraints gbcConstraint(int gridW, int gridH, int gridX, int gridY, int weightX, int weightY) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(3, 3, 3, 3);
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridwidth = gridW;
-        gbc.gridheight = gridH;
-        gbc.gridx = gridX;
-        gbc.gridy = gridY;
-        gbc.weightx = weightX;
-        gbc.weighty = weightY;
-        return gbc;
     }
 
     /**Open file explorer, select a file and return path as String or null if cancelled*/

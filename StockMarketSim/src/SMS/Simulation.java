@@ -6,12 +6,13 @@ import java.util.concurrent.*;
 
 public class Simulation {
     private SimView view;
-    private Market model;
+    private MarketTest model;
     private boolean activeCycle;
 
     // Test commit
     public Simulation() {
         view = new SimView();
+        model = new MarketTest();
         activeCycle = false;
         setUpAction();
     }
@@ -36,14 +37,14 @@ public class Simulation {
         });
 
         // add action to 'New' menu item under 'File'
-        // create new Market object here by passing two .xlsx files
+        // create new MarketTest object here by passing two .xlsx files
         view.getMenuNew().setAction(new AbstractAction("New") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("New Sim");
                 SimViewNew newSimFrame = new SimViewNew();
                 if (!newSimFrame.getInitialData().isEmpty() && !newSimFrame.getExternalData().isEmpty()) {
-                    model = new Market(newSimFrame.getInitialData(), newSimFrame.getExternalData());
+                    model = new MarketTest(newSimFrame.getInitialData(), newSimFrame.getExternalData());
                 }
                 System.out.println(newSimFrame.getInitialData());
                 System.out.println(newSimFrame.getExternalData());
@@ -56,6 +57,8 @@ public class Simulation {
         Runnable play = () -> {
             System.out.println("Test - " + x);
             x += 1;
+            model.addData();
+            view.setDataset(model.getDataset());
         };
     }
 }

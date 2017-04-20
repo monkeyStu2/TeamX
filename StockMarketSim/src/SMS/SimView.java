@@ -1,25 +1,28 @@
 package SMS;
 
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYDataset;
+
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.event.*;
 import java.awt.*;
 
 public class SimView extends JFrame {
 
-    private static final int WIDTH = 500;
-    private static final int HEIGHT = 300;
+    private static final int WIDTH = 1000;
+    private static final int HEIGHT = 600;
 
-    private JButton bSimulation;
-    private PlayHandler bhSim;
+    private JButton bSimulation, bDay, bWeek, bMonth, bYear, bNext, bPrev;
 
     private JMenuBar mBar;
-    private JMenu mFile;
-    private JMenuItem mNew, mLoad, mSave, mSaveAs, mExit;
+    private JMenu mFile, mGraph;
+    private JMenuItem mNew, mLoad, mSave, mSaveAs, mExit, mLineArea;
 
     private JTabbedPane tab;
-    private JPanel tStock, tPortfolio;
+    private JPanel tStock, tBottomStock, tPortfolio;
 
-    private SimGraph lineG;
+    private SimGraph stockMarketGraph;
 
     // Construct the frame
     public SimView() {
@@ -34,43 +37,92 @@ public class SimView extends JFrame {
     public void setUp() {
         Container pane = getContentPane();
         pane.setLayout(new GridLayout(1, 1));
-        GridBagConstraints c = new GridBagConstraints();
+
+        // Build buttons and actions handlers
+        bSimulation = new JButton("Start Simulation");
+        bSimulation.setBackground(Color.DARK_GRAY);
+        bSimulation.setForeground(Color.WHITE);
+        bSimulation.addActionListener(new PlayHandler());
+        bDay = new JButton("Day");
+        bDay.setBackground(Color.DARK_GRAY);
+        bDay.setForeground(Color.WHITE);
+        bDay.addActionListener(new Switch2DayHandler());
+        bWeek = new JButton("Week");
+        bWeek.setBackground(Color.DARK_GRAY);
+        bWeek.setForeground(Color.WHITE);
+        bWeek.addActionListener(new Switch2WeekHandler());
+        bMonth = new JButton("Month");
+        bMonth.setBackground(Color.DARK_GRAY);
+        bMonth.setForeground(Color.WHITE);
+        bMonth.addActionListener(new Switch2MonthHandler());
+        bYear = new JButton("Year");
+        bYear.setBackground(Color.DARK_GRAY);
+        bYear.setForeground(Color.WHITE);
+        bYear.addActionListener(new Switch2YearHandler());
+        bNext = new JButton("Next");
+        bNext.setBackground(Color.DARK_GRAY);
+        bNext.setForeground(Color.WHITE);
+        bNext.addActionListener(new NextPeriodHandler());
+        bPrev = new JButton("Prev");
+        bPrev.setBackground(Color.DARK_GRAY);
+        bPrev.setForeground(Color.WHITE);
+        bPrev.addActionListener(new PrevPeriodHandler());
 
         // Build Menu Bar, Menus and Menu Items
         mBar = new JMenuBar();
         mFile = new JMenu("File");
         mFile.setMnemonic(KeyEvent.VK_F);
+        mGraph = new JMenu("Graph");
+        mGraph.setMnemonic(KeyEvent.VK_G);
+        // file menu items
         mNew = new JMenuItem("New Simulation", KeyEvent.VK_N);
-        mFile.add(mNew);
         mLoad = new JMenuItem("Load Simulation", KeyEvent.VK_L);
-        mFile.add(mLoad);
         mSave = new JMenuItem("Save Simulation", KeyEvent.VK_S);
-        mFile.add(mSave);
         mSaveAs = new JMenuItem("Save As Simulation", KeyEvent.VK_A);
-        mFile.add(mSaveAs);
         mExit = new JMenuItem("Exit program", KeyEvent.VK_X);
         mExit.addActionListener(e -> System.exit(0));
+        mFile.add(mNew);
+        mFile.add(mLoad);
+        mFile.add(mSave);
+        mFile.add(mSaveAs);
         mFile.add(mExit);
+        // graph menu items
+        mLineArea = new JMenuItem("Switch render", KeyEvent.VK_R);
+        mLineArea.addActionListener(new SwitchGraph());
+        mGraph.add(mLineArea);
+        // add to menu bar
         mBar.add(mFile);
+        mBar.add(mGraph);
         setJMenuBar(mBar);
-
-        // Build buttons and actions handlers
-        bSimulation = new JButton("Start Simulation");
-        bhSim = new PlayHandler();
-        bSimulation.addActionListener(bhSim);
 
         // Build tabs and add components
         tab = new JTabbedPane();
+        // Stock Market tab. There are two panels,
+        // first to fit the graph, play button and bottom panel
+        stockMarketGraph = new SimGraph();
         tStock = new JPanel(new BorderLayout());
-        tab.addTab("Stock Market", tStock);
         tStock.add(bSimulation, BorderLayout.NORTH);
-        lineG = new SimGraph();
-        lineG.addData();
-        tStock.add(lineG, BorderLayout.CENTER);
+        tStock.add(stockMarketGraph, BorderLayout.CENTER);
+        // and second to fit bottom row buttons
+        tBottomStock = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        tBottomStock.add(bDay, gbcConstraint(2, 1, 0, 0, 0.1, 0));
+        tBottomStock.add(bWeek, gbcConstraint(2, 1, 2, 0, 0.1, 0));
+        tBottomStock.add(bMonth, gbcConstraint(2, 1, 4, 0, 0.1, 0));
+        tBottomStock.add(bYear, gbcConstraint(2, 1, 6, 0, 0.1, 0));
+        tBottomStock.add(bNext, gbcConstraint(2, 1, 8, 0, 0.1, 0));
+        tBottomStock.add(bPrev, gbcConstraint(2, 1, 10, 0, 0.1, 0));
+        tStock.add(tBottomStock, BorderLayout.SOUTH);
+        // Portfolio tab
         tPortfolio = new JPanel(new GridBagLayout());
-        tab.addTab("Portfolio", tPortfolio);
 
+        tab.addTab("Stock Market", tStock);
+        tab.addTab("Portfolio", tPortfolio);
         pane.add(tab);
+    }
+
+    public void setDataset(XYDataset dataset) {
+        stockMarketGraph.setDataset(dataset);
     }
 
     public AbstractButton getBtnPlay() { return bSimulation; }
@@ -91,5 +143,78 @@ public class SimView extends JFrame {
                 clicked = false;
             }
         }
+    }
+
+    private class Switch2DayHandler implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Day button pressed");
+            stockMarketGraph.switch2Day();
+        }
+    }
+
+    private class Switch2WeekHandler implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Week button pressed");
+            stockMarketGraph.switch2Week();
+        }
+    }
+
+    private class Switch2MonthHandler implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Month button pressed");
+            stockMarketGraph.switch2Month();
+        }
+    }
+
+    private class Switch2YearHandler implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Year button pressed");
+            stockMarketGraph.switch2Year();
+        }
+    }
+
+    private class NextPeriodHandler implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Next button pressed");
+            stockMarketGraph.nextPeriod();
+        }
+    }
+
+    private class PrevPeriodHandler implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Prev button pressed");
+            stockMarketGraph.prevPeriod();
+        }
+    }
+
+    private class SwitchGraph implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Switch button pressed");
+            stockMarketGraph.switchGraph();
+        }
+    }
+
+    /**Set where a component will be placed on a GridBagLayout panel
+     * gridW and gridH set the size of the component on the grid
+     * gridX and gridY set the location of the component on the grid
+     * weightX and weightY set whether the component will fill up the panel or not*/
+    protected static GridBagConstraints gbcConstraint(int gridW, int gridH, int gridX, int gridY, double weightX, double weightY) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(1, 2, 1, 2);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = gridW;
+        gbc.gridheight = gridH;
+        gbc.gridx = gridX;
+        gbc.gridy = gridY;
+        gbc.weightx = weightX;
+        gbc.weighty = weightY;
+        return gbc;
     }
 }
