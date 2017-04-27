@@ -28,7 +28,7 @@ public class Simulation {
                 ViewPlay va = new ViewPlay();
                 if (!activeCycle) {
                     activeCycle = true;
-                    sf = executor.scheduleAtFixedRate(va.play, 0, 1, TimeUnit.SECONDS);
+                    sf = executor.scheduleAtFixedRate(va.play, 0, 40, TimeUnit.MILLISECONDS);
                 } else {
                     activeCycle = false;
                     sf.cancel(true);

@@ -1,10 +1,9 @@
 package SMS;
 
-import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYDataset;
-
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.event.*;
 import java.awt.*;
 
@@ -13,14 +12,14 @@ public class SimView extends JFrame {
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 600;
 
-    private JButton bSimulation, bDay, bWeek, bMonth, bYear, bNext, bPrev;
+    private JButton bSimulation, bDay, bWeek, bMonth, bYear, bNext, bPrev, bSave, bLoad;
 
     private JMenuBar mBar;
     private JMenu mFile, mGraph;
     private JMenuItem mNew, mLoad, mSave, mSaveAs, mExit, mLineArea;
 
     private JTabbedPane tab;
-    private JPanel tStock, tBottomStock, tPortfolio;
+    private JPanel tStockGraph, tBottomStock, tPortfolio;
 
     private SimGraph stockMarketGraph;
 
@@ -38,34 +37,48 @@ public class SimView extends JFrame {
         Container pane = getContentPane();
         pane.setLayout(new GridLayout(1, 1));
 
+        Color bgColour = Color.DARK_GRAY;
+        Color fgColour = Color.WHITE;
+
         // Build buttons and actions handlers
         bSimulation = new JButton("Start Simulation");
-        bSimulation.setBackground(Color.DARK_GRAY);
-        bSimulation.setForeground(Color.WHITE);
+        bSimulation.setBackground(bgColour);
+        bSimulation.setForeground(fgColour);
+        bSimulation.setMaximumSize(new Dimension(70, 50));
         bSimulation.addActionListener(new PlayHandler());
+        bSave = new JButton("Save");
+        bSave.setBackground(bgColour);
+        bSave.setForeground(fgColour);
+        bSave.setMaximumSize(new Dimension(70, 50));
+        bSave.addActionListener(new SaveHandler());
+        bLoad = new JButton("Load");
+        bLoad.setBackground(bgColour);
+        bLoad.setForeground(fgColour);
+        bLoad.setMaximumSize(new Dimension(70, 50));
+        bLoad.addActionListener(new LoadHandler());
         bDay = new JButton("Day");
-        bDay.setBackground(Color.DARK_GRAY);
-        bDay.setForeground(Color.WHITE);
+        bDay.setBackground(bgColour);
+        bDay.setForeground(fgColour);
         bDay.addActionListener(new Switch2DayHandler());
         bWeek = new JButton("Week");
-        bWeek.setBackground(Color.DARK_GRAY);
-        bWeek.setForeground(Color.WHITE);
+        bWeek.setBackground(bgColour);
+        bWeek.setForeground(fgColour);
         bWeek.addActionListener(new Switch2WeekHandler());
         bMonth = new JButton("Month");
-        bMonth.setBackground(Color.DARK_GRAY);
-        bMonth.setForeground(Color.WHITE);
+        bMonth.setBackground(bgColour);
+        bMonth.setForeground(fgColour);
         bMonth.addActionListener(new Switch2MonthHandler());
         bYear = new JButton("Year");
-        bYear.setBackground(Color.DARK_GRAY);
-        bYear.setForeground(Color.WHITE);
+        bYear.setBackground(bgColour);
+        bYear.setForeground(fgColour);
         bYear.addActionListener(new Switch2YearHandler());
         bNext = new JButton("Next");
-        bNext.setBackground(Color.DARK_GRAY);
-        bNext.setForeground(Color.WHITE);
+        bNext.setBackground(bgColour);
+        bNext.setForeground(fgColour);
         bNext.addActionListener(new NextPeriodHandler());
         bPrev = new JButton("Prev");
-        bPrev.setBackground(Color.DARK_GRAY);
-        bPrev.setForeground(Color.WHITE);
+        bPrev.setBackground(bgColour);
+        bPrev.setForeground(fgColour);
         bPrev.addActionListener(new PrevPeriodHandler());
 
         // Build Menu Bar, Menus and Menu Items
@@ -93,31 +106,62 @@ public class SimView extends JFrame {
         // add to menu bar
         mBar.add(mFile);
         mBar.add(mGraph);
+        mNew.setBackground(bgColour);
+        mNew.setForeground(fgColour);
+        mLoad.setBackground(bgColour);
+        mLoad.setForeground(fgColour);
+        mSave.setBackground(bgColour);
+        mSave.setForeground(fgColour);
+        mSaveAs.setBackground(bgColour);
+        mSaveAs.setForeground(fgColour);
+        mExit.setBackground(bgColour);
+        mExit.setForeground(fgColour);
+        mLineArea.setBackground(bgColour);
+        mLineArea.setForeground(fgColour);
+        mFile.setBackground(bgColour);
+        mFile.setForeground(fgColour);
+        mGraph.setBackground(bgColour);
+        mGraph.setForeground(fgColour);
+        mBar.setBackground(bgColour);
         setJMenuBar(mBar);
 
+        JPanel tStock = new JPanel(new BorderLayout());
+        Box tLeftButtons = Box.createVerticalBox();
+        Border b = new EmptyBorder(5,5,5,5);
+        UIManager.put("TabbedPane.selected", Color.DARK_GRAY); //change colour of tab when selected
         // Build tabs and add components
         tab = new JTabbedPane();
         // Stock Market tab. There are two panels,
         // first to fit the graph, play button and bottom panel
         stockMarketGraph = new SimGraph();
-        tStock = new JPanel(new BorderLayout());
-        tStock.add(bSimulation, BorderLayout.NORTH);
-        tStock.add(stockMarketGraph, BorderLayout.CENTER);
+        tStockGraph = new JPanel(new BorderLayout());
+        tStockGraph.add(stockMarketGraph, BorderLayout.CENTER);
         // and second to fit bottom row buttons
         tBottomStock = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
         tBottomStock.add(bDay, gbcConstraint(2, 1, 0, 0, 0.1, 0));
         tBottomStock.add(bWeek, gbcConstraint(2, 1, 2, 0, 0.1, 0));
         tBottomStock.add(bMonth, gbcConstraint(2, 1, 4, 0, 0.1, 0));
         tBottomStock.add(bYear, gbcConstraint(2, 1, 6, 0, 0.1, 0));
         tBottomStock.add(bNext, gbcConstraint(2, 1, 8, 0, 0.1, 0));
         tBottomStock.add(bPrev, gbcConstraint(2, 1, 10, 0, 0.1, 0));
-        tStock.add(tBottomStock, BorderLayout.SOUTH);
+        tStockGraph.add(tBottomStock, BorderLayout.SOUTH);
+        tLeftButtons.add(bSimulation);
+        tLeftButtons.add(Box.createVerticalStrut(20));
+        tLeftButtons.add(bSave);
+        tLeftButtons.add(Box.createHorizontalGlue());
+        tLeftButtons.add(Box.createVerticalStrut(20));
+        tLeftButtons.add(bLoad);
+        tLeftButtons.setBorder(b);
+        tStock.add(tStockGraph, BorderLayout.CENTER);
+        tStock.add(tLeftButtons, BorderLayout.WEST);
         // Portfolio tab
         tPortfolio = new JPanel(new GridBagLayout());
 
         tab.addTab("Stock Market", tStock);
         tab.addTab("Portfolio", tPortfolio);
+        tab.setBackground(Color.GRAY);
+        tab.setForeground(fgColour);
+        tab.setVisible(true);
         pane.add(tab);
     }
 
@@ -142,6 +186,20 @@ public class SimView extends JFrame {
                 bSimulation.setText("Play");
                 clicked = false;
             }
+        }
+    }
+
+    private class SaveHandler implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Save button pressed");
+        }
+    }
+
+    private class LoadHandler implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Load button pressed");
         }
     }
 
