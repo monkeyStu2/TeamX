@@ -4,6 +4,9 @@ import org.jfree.data.xy.XYDataset;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.awt.*;
 
@@ -14,12 +17,15 @@ public class SimView extends JFrame {
 
     private JButton bSimulation, bDay, bWeek, bMonth, bYear, bNext, bPrev, bSave, bLoad;
 
-    private JMenuBar mBar;
-    private JMenu mFile, mGraph;
-    private JMenuItem mNew, mLoad, mSave, mSaveAs, mExit, mLineArea;
+    private JMenuItem mNew;
+    private JMenuItem mLoad;
+    private JMenuItem mSave;
+    private JMenuItem mSaveAs;
 
     private JTabbedPane tab;
-    private JPanel tStockGraph, tBottomStock, tPortfolio;
+    private JPanel tStock, tPortfolio;
+
+    private JTable stockTable;
 
     private SimGraph stockMarketGraph;
 
@@ -28,84 +34,110 @@ public class SimView extends JFrame {
         setTitle("Team-X Stock Market Simulation");
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(1000, 600));
         setUp();
         setVisible(true);
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            JFrame.setDefaultLookAndFeelDecorated(false);
+            JDialog.setDefaultLookAndFeelDecorated(false);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
     }
 
     // Add contents to frame
-    public void setUp() {
+    private void setUp() {
+        UIManager.put("TabbedPane.borderHightlightColor", Color.WHITE);
+        UIManager.put("TabbedPane.darkShadow", Color.WHITE);
+        UIManager.put("TabbedPane.light", Color.WHITE);
+        UIManager.put("TabbedPane.selectHighlight", Color.BLACK);
+        UIManager.put("TabbedPane.focus", Color.DARK_GRAY);
+        UIManager.put("TabbedPane.contentAreaColor", Color.BLACK);
+        UIManager.put("TabbedPane.selected", Color.BLACK);
+        UIManager.put("TabbedPane.unselected", Color.DARK_GRAY);
+
         Container pane = getContentPane();
         pane.setLayout(new GridLayout(1, 1));
+
+        setUpButtons();
+        setUpMenuBar();
+        setUpStockTable();
+        setUpTabbedPane();
+
+        pane.add(tab);
+    }
+
+    private void setUpButtons() {
+        Color bgColour = Color.DARK_GRAY;
+        Color fgColour = Color.WHITE;
+        Border buttonB = BorderFactory.createLineBorder(Color.WHITE, 1, true);
+
+        // Build buttons and actions handlers
+        Dimension size = new Dimension(50, 40);
+        bSimulation = createButton("Simulation", bgColour, fgColour, size, new PlayHandler(), buttonB, false);
+        bSave = createButton("Save", bgColour, fgColour, size, new SaveHandler(), buttonB, false);
+        bLoad = createButton("Load", bgColour, fgColour, size, new LoadHandler(), buttonB, false);
+
+        size = new Dimension(50, 20);
+        bDay = createButton("Day", bgColour, fgColour, size, new Switch2DayHandler(), buttonB, false);
+        bWeek = createButton("Week", bgColour, fgColour, size, new Switch2WeekHandler(), buttonB, false);
+        bMonth = createButton("Month", bgColour, fgColour, size, new Switch2MonthHandler(), buttonB, false);
+        bYear = createButton("Year", bgColour, fgColour, size, new Switch2YearHandler(), buttonB, false);
+        bNext = createButton("Next", bgColour, fgColour, size, new NextPeriodHandler(), buttonB, false);
+        bPrev = createButton("Prev", bgColour, fgColour, size, new PrevPeriodHandler(), buttonB, false);
+    }
+
+    private JButton createButton(String name, Color bg, Color fg, Dimension size, ActionListener handler, Border border, Boolean focusable) {
+        JButton but = new JButton(name);
+        but.setBackground(bg);
+        but.setForeground(fg);
+        but.setMaximumSize(size);
+        but.setPreferredSize(size);
+        but.addActionListener(handler);
+        but.setFocusable(focusable);
+        but.setBorder(border);
+        return but;
+    }
+
+    private void setUpMenuBar() {
+        JMenuBar mBar = new JMenuBar();
+        JMenu mFile = new JMenu("File");
+        JMenu mGraph = new JMenu("Graph");
+        JMenuItem mExit = new JMenuItem("Exit program", KeyEvent.VK_X);
+        JMenuItem mZoomIn = new JMenuItem("Zoom-In", KeyEvent.VK_I);
+        JMenuItem mZoomOut = new JMenuItem("Zoom-Out", KeyEvent.VK_O);
 
         Color bgColour = Color.DARK_GRAY;
         Color fgColour = Color.WHITE;
 
-        // Build buttons and actions handlers
-        bSimulation = new JButton("Start Simulation");
-        bSimulation.setBackground(bgColour);
-        bSimulation.setForeground(fgColour);
-        bSimulation.setMaximumSize(new Dimension(70, 50));
-        bSimulation.addActionListener(new PlayHandler());
-        bSave = new JButton("Save");
-        bSave.setBackground(bgColour);
-        bSave.setForeground(fgColour);
-        bSave.setMaximumSize(new Dimension(70, 50));
-        bSave.addActionListener(new SaveHandler());
-        bLoad = new JButton("Load");
-        bLoad.setBackground(bgColour);
-        bLoad.setForeground(fgColour);
-        bLoad.setMaximumSize(new Dimension(70, 50));
-        bLoad.addActionListener(new LoadHandler());
-        bDay = new JButton("Day");
-        bDay.setBackground(bgColour);
-        bDay.setForeground(fgColour);
-        bDay.addActionListener(new Switch2DayHandler());
-        bWeek = new JButton("Week");
-        bWeek.setBackground(bgColour);
-        bWeek.setForeground(fgColour);
-        bWeek.addActionListener(new Switch2WeekHandler());
-        bMonth = new JButton("Month");
-        bMonth.setBackground(bgColour);
-        bMonth.setForeground(fgColour);
-        bMonth.addActionListener(new Switch2MonthHandler());
-        bYear = new JButton("Year");
-        bYear.setBackground(bgColour);
-        bYear.setForeground(fgColour);
-        bYear.addActionListener(new Switch2YearHandler());
-        bNext = new JButton("Next");
-        bNext.setBackground(bgColour);
-        bNext.setForeground(fgColour);
-        bNext.addActionListener(new NextPeriodHandler());
-        bPrev = new JButton("Prev");
-        bPrev.setBackground(bgColour);
-        bPrev.setForeground(fgColour);
-        bPrev.addActionListener(new PrevPeriodHandler());
-
         // Build Menu Bar, Menus and Menu Items
-        mBar = new JMenuBar();
-        mFile = new JMenu("File");
         mFile.setMnemonic(KeyEvent.VK_F);
-        mGraph = new JMenu("Graph");
         mGraph.setMnemonic(KeyEvent.VK_G);
+
         // file menu items
         mNew = new JMenuItem("New Simulation", KeyEvent.VK_N);
         mLoad = new JMenuItem("Load Simulation", KeyEvent.VK_L);
         mSave = new JMenuItem("Save Simulation", KeyEvent.VK_S);
         mSaveAs = new JMenuItem("Save As Simulation", KeyEvent.VK_A);
-        mExit = new JMenuItem("Exit program", KeyEvent.VK_X);
         mExit.addActionListener(e -> System.exit(0));
         mFile.add(mNew);
         mFile.add(mLoad);
         mFile.add(mSave);
         mFile.add(mSaveAs);
         mFile.add(mExit);
-        // graph menu items
-        mLineArea = new JMenuItem("Switch render", KeyEvent.VK_R);
-        mLineArea.addActionListener(new SwitchGraph());
-        mGraph.add(mLineArea);
+
+        //graph menu items
+        mZoomIn.addActionListener(e -> stockMarketGraph.zoomIn());
+        mZoomOut.addActionListener(e -> stockMarketGraph.zoomOut());
+        mGraph.add(mZoomIn);
+        mGraph.add(mZoomOut);
+
         // add to menu bar
         mBar.add(mFile);
         mBar.add(mGraph);
+
         mNew.setBackground(bgColour);
         mNew.setForeground(fgColour);
         mLoad.setBackground(bgColour);
@@ -116,34 +148,73 @@ public class SimView extends JFrame {
         mSaveAs.setForeground(fgColour);
         mExit.setBackground(bgColour);
         mExit.setForeground(fgColour);
-        mLineArea.setBackground(bgColour);
-        mLineArea.setForeground(fgColour);
         mFile.setBackground(bgColour);
         mFile.setForeground(fgColour);
+        mZoomIn.setBackground(bgColour);
+        mZoomIn.setForeground(fgColour);
+        mZoomOut.setBackground(bgColour);
+        mZoomOut.setForeground(fgColour);
         mGraph.setBackground(bgColour);
         mGraph.setForeground(fgColour);
+
         mBar.setBackground(bgColour);
         setJMenuBar(mBar);
+    }
 
-        JPanel tStock = new JPanel(new BorderLayout());
+    /**create table for tStock tab*/
+    private void setUpStockTable() {
+        String[] columnsName = new String[]{"Company", "Type", "Pence"};
+        Object[][] data = {{"", "", ""}};
+        stockTable = setUpTable(data, columnsName, Color.BLACK, Color.WHITE, Color.DARK_GRAY, new Color(156, 0, 0, 199),
+                true, false, true);
+        ListSelectionModel listModel = stockTable.getSelectionModel();
+        listModel.addListSelectionListener(new TableRowListener());
+    }
+
+    /** Build tabs and add components*/
+    private void setUpTabbedPane() {
+        tab = new JTabbedPane();
+
+        Color bgColour = Color.DARK_GRAY;
+        Color fgColour = Color.WHITE;
+
+        stockMarketTab();
+        portfolioTab();
+
+        tab.addTab("Stock Market", tStock);
+        tab.addTab("Portfolio", tPortfolio);
+        tab.setBackground(bgColour);
+        tab.setForeground(fgColour);
+        tab.setOpaque(true);
+        tab.setVisible(true);
+    }
+
+    /** Stock Market tab. There are four panels,
+    first to fit the graph,
+     second for left panel buttons
+     third for bottom panel buttons
+     fourth for right panel table with scrollpane*/
+    private void stockMarketTab() {
+        tStock = new JPanel(new BorderLayout());
+        JPanel tStockGraph = new JPanel(new BorderLayout());
+        JPanel tRightStock = new JPanel(new BorderLayout());
+        JPanel tBottomStock = new JPanel(new GridBagLayout());
+        JScrollPane sRightStock = new JScrollPane(tRightStock);
         Box tLeftButtons = Box.createVerticalBox();
         Border b = new EmptyBorder(5,5,5,5);
-        UIManager.put("TabbedPane.selected", Color.DARK_GRAY); //change colour of tab when selected
-        // Build tabs and add components
-        tab = new JTabbedPane();
-        // Stock Market tab. There are two panels,
-        // first to fit the graph, play button and bottom panel
+
         stockMarketGraph = new SimGraph();
-        tStockGraph = new JPanel(new BorderLayout());
         tStockGraph.add(stockMarketGraph, BorderLayout.CENTER);
+        tStockGraph.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         // and second to fit bottom row buttons
-        tBottomStock = new JPanel(new GridBagLayout());
         tBottomStock.add(bDay, gbcConstraint(2, 1, 0, 0, 0.1, 0));
         tBottomStock.add(bWeek, gbcConstraint(2, 1, 2, 0, 0.1, 0));
         tBottomStock.add(bMonth, gbcConstraint(2, 1, 4, 0, 0.1, 0));
         tBottomStock.add(bYear, gbcConstraint(2, 1, 6, 0, 0.1, 0));
         tBottomStock.add(bNext, gbcConstraint(2, 1, 8, 0, 0.1, 0));
         tBottomStock.add(bPrev, gbcConstraint(2, 1, 10, 0, 0.1, 0));
+        tBottomStock.setOpaque(true);
+        tBottomStock.setBackground(Color.BLACK);
         tStockGraph.add(tBottomStock, BorderLayout.SOUTH);
         tLeftButtons.add(bSimulation);
         tLeftButtons.add(Box.createVerticalStrut(20));
@@ -152,21 +223,89 @@ public class SimView extends JFrame {
         tLeftButtons.add(Box.createVerticalStrut(20));
         tLeftButtons.add(bLoad);
         tLeftButtons.setBorder(b);
+        tLeftButtons.setOpaque(true);
+        tLeftButtons.setBackground(Color.BLACK);
+        tRightStock.add(stockTable.getTableHeader(), BorderLayout.PAGE_START);
+        tRightStock.add(stockTable, BorderLayout.CENTER);
         tStock.add(tStockGraph, BorderLayout.CENTER);
         tStock.add(tLeftButtons, BorderLayout.WEST);
+        tStock.add(sRightStock, BorderLayout.EAST);
+    }
+
+    private void portfolioTab() {
         // Portfolio tab
         tPortfolio = new JPanel(new GridBagLayout());
 
-        tab.addTab("Stock Market", tStock);
-        tab.addTab("Portfolio", tPortfolio);
-        tab.setBackground(Color.GRAY);
-        tab.setForeground(fgColour);
-        tab.setVisible(true);
-        pane.add(tab);
+        Object[][] data = {{"", "", ""}};
+        Object[][] data2 = {{"", "", "", ""}};
+        String[] stockTableColumnsNames = new String[]{"Company", "Closing Price", "Stock Issued"};
+        String[] transactionsTableColumnsNames = new String[]{"Action", "No of Stock", "Value", "Time"};
+        String[] clientTableColumnsNames = new String[]{"Name", "Cash Holding (£)", "Total Client Worth"};
+        String[] clientStockTableColumnsNames = new String[]{"Company", "Amount", "Worth"};
+
+        Color bgColour = Color.BLACK;
+        Color fgColour = Color.WHITE;
+        Color headerBgColour = Color.DARK_GRAY;
+        Color selectedColour = new Color(156, 0, 0, 199);
+
+        tPortfolio.setBackground(bgColour);
+        JTable tTableStock = setUpTable(data, stockTableColumnsNames, bgColour, fgColour, headerBgColour,
+                selectedColour, true, false, true);
+        JTable tTableTransactions = setUpTable(data2, transactionsTableColumnsNames, bgColour, fgColour, headerBgColour,
+                selectedColour, true, false, true);
+        JTable tClients = setUpTable(data, clientTableColumnsNames, bgColour, fgColour, headerBgColour,
+                selectedColour, true, false, true);
+        JTable tClientStock = setUpTable(data, clientStockTableColumnsNames, bgColour, fgColour, headerBgColour,
+                selectedColour, true, false, true);
+
+        tPortfolio.add(new JScrollPane(tTableStock), gbcConstraint(1, 1, 0, 0, 0.1, 0.1));
+        tPortfolio.add(new JScrollPane(tTableTransactions), gbcConstraint(1, 1, 1, 0, 0.1, 0.1));
+        tPortfolio.add(new JScrollPane(tClients), gbcConstraint(1, 1, 2, 0, 0.1, 0.1));
+        tPortfolio.add(new JScrollPane(tClientStock), gbcConstraint(1, 1, 3, 0, 0.1, 0.1));
+
     }
 
+    private JTable setUpTable(Object[][] data, String[] names, Color bg, Color fg, Color header, Color selected, Boolean fills, Boolean focus, Boolean opaque) {
+        JTable table = new JTable(createTableModel(data, names));
+        table.setBackground(bg);
+        table.setForeground(fg);
+        table.getTableHeader().setBackground(header);
+        table.getTableHeader().setForeground(fg);
+        table.setSelectionBackground(selected);
+        table.setSelectionForeground(fg);
+        table.setFillsViewportHeight(fills);
+        table.setFocusable(focus);
+        table.setOpaque(opaque);
+        return table;
+    }
+
+    private DefaultTableModel createTableModel(Object[][] data, String[] colNames) {
+        return new DefaultTableModel(data, colNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+    }
+
+    /**replace the graph dataset and table with new dataset*/
     public void setDataset(XYDataset dataset) {
         stockMarketGraph.setDataset(dataset);
+        DefaultTableModel model = (DefaultTableModel) stockTable.getModel();
+
+        if (model.getRowCount() < dataset.getSeriesCount()) {
+            model.setRowCount(0);
+        }
+
+        for (int i = 0; i < dataset.getSeriesCount(); i++) {
+            if (model.getRowCount() < dataset.getSeriesCount()) {
+                double d = (double) dataset.getY(i, dataset.getItemCount(i) - 1);
+                model.addRow(new Object[]{dataset.getSeriesKey(i), "Godmode", (double) Math.round(d * 100d) / 100d});
+            } else {
+                double d = (double) dataset.getY(i, dataset.getItemCount(i) - 1);
+                model.setValueAt((double) Math.round(d * 100d) / 100d, i, 2);
+            }
+        }
     }
 
     public AbstractButton getBtnPlay() { return bSimulation; }
@@ -251,11 +390,26 @@ public class SimView extends JFrame {
         }
     }
 
-    private class SwitchGraph implements ActionListener {
+//    private class SwitchGraph implements ActionListener {
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            System.out.println("Switch button pressed");
+//            stockMarketGraph.switchGraph();
+//        }
+//    }
+
+    private class TableRowListener implements ListSelectionListener {
         @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("Switch button pressed");
-            stockMarketGraph.switchGraph();
+        public void valueChanged(ListSelectionEvent e) {
+            int[] rowsNo = new int[stockTable.getSelectedRowCount()];
+            for (int i = 0; i < stockTable.getSelectedRowCount(); i++) {
+                rowsNo[i] = stockTable.getSelectedRows()[i];
+            }
+            if (rowsNo.length < 1) {
+                stockMarketGraph.setSeriesVisible();
+            } else {
+                stockMarketGraph.setSeriesVisible(rowsNo);
+            }
         }
     }
 

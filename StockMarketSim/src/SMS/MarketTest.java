@@ -23,10 +23,16 @@ public class MarketTest {
         dataset = new TimeSeriesCollection();
         time = LocalTime.of(9, 0);
         date = LocalDate.of(2017, 1, 2);
-        TimeSeries data = new TimeSeries("Team-X Corp");
         LocalDateTime ldt = LocalDateTime.of(date, time);
         Date dateTime = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+        TimeSeries data = new TimeSeries("Team-X Corp");
         data.add(new Minute(dateTime), 150);
+        dataset.addSeries(data);
+        data = new TimeSeries("Apple Burger");
+        data.add(new Minute(dateTime), 146);
+        dataset.addSeries(data);
+        data = new TimeSeries("Nuka-Cola");
+        data.add(new Minute(dateTime), 154);
         dataset.addSeries(data);
         cycle();
     }
@@ -40,12 +46,14 @@ public class MarketTest {
 
     public void addData() {
         Random r = new Random();
-        TimeSeries ser = dataset.getSeries(0);
-        LocalDateTime ldt = LocalDateTime.of(date, time);
-        System.out.println(ldt);
-        Date dateTime = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
-        double value = (double) ser.getValue(ser.getItemCount()-1) + r.nextDouble() * 2 - 1;
-        ser.add(new Minute(dateTime), value);
+        for (int i = 0; i < dataset.getSeriesCount(); i++) {
+            TimeSeries ser = dataset.getSeries(i);
+            LocalDateTime ldt = LocalDateTime.of(date, time);
+            System.out.println(ldt);
+            Date dateTime = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+            double value = (double) ser.getValue(ser.getItemCount() - 1) + r.nextDouble() * 2 - 1;
+            ser.add(new Minute(dateTime), value);
+        }
         cycle();
     }
 

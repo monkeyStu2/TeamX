@@ -28,7 +28,7 @@ public class Simulation {
                 ViewPlay va = new ViewPlay();
                 if (!activeCycle) {
                     activeCycle = true;
-                    sf = executor.scheduleAtFixedRate(va.play, 0, 40, TimeUnit.MILLISECONDS);
+                    sf = executor.scheduleAtFixedRate(va.play, 0, 10, TimeUnit.MILLISECONDS);
                 } else {
                     activeCycle = false;
                     sf.cancel(true);
@@ -46,8 +46,30 @@ public class Simulation {
                 if (!newSimFrame.getInitialData().isEmpty() && !newSimFrame.getExternalData().isEmpty()) {
                     model = new MarketTest(newSimFrame.getInitialData(), newSimFrame.getExternalData());
                 }
-                System.out.println(newSimFrame.getInitialData());
-                System.out.println(newSimFrame.getExternalData());
+            }
+        });
+
+        view.getMenuLoad().setAction(new AbstractAction("Load") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Load Sim");
+                SimViewNew loadSimFrame = new SimViewNew();
+            }
+        });
+
+        view.getMenuSave().setAction(new AbstractAction("Save") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Save Sim");
+                SimViewNew saveSimFrame = new SimViewNew();
+            }
+        });
+
+        view.getMenuSaveAs().setAction(new AbstractAction("Save As") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Save As Sim");
+                SimViewNew saveAsSimFrame = new SimViewNew();
             }
         });
     }
