@@ -234,7 +234,38 @@ public class SimView extends JFrame {
 
     private void portfolioTab() {
         // Portfolio tab
+        Color bgColour = Color.BLACK;
+        Color fgColour = Color.WHITE;
+        Color headerBgColour = Color.DARK_GRAY;
+        Color selectedColour = new Color(156, 0, 0, 199);
+
         tPortfolio = new JPanel(new GridBagLayout());
+        JPanel leftTable = new JPanel(new BorderLayout());
+        JPanel leftMiddleTable = new JPanel(new BorderLayout());
+        JPanel rightMiddleTable = new JPanel(new BorderLayout());
+        JPanel rightTable = new JPanel(new BorderLayout());
+
+        leftTable.setOpaque(false);
+        leftMiddleTable.setOpaque(false);
+        rightMiddleTable.setOpaque(false);
+        rightTable.setOpaque(false);
+
+        JLabel leftTableTitle = new JLabel("Traded Companies");
+        JLabel leftMiddleTableTitle = new JLabel("Transactions");
+        JLabel rightMiddleTableTitle = new JLabel("Clients");
+        JLabel rightTableTitle = new JLabel("Client's Stock");
+        leftTableTitle.setBackground(bgColour);
+        leftTableTitle.setForeground(fgColour);
+        leftTableTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        leftMiddleTableTitle.setBackground(bgColour);
+        leftMiddleTableTitle.setForeground(fgColour);
+        leftMiddleTableTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        rightMiddleTableTitle.setBackground(bgColour);
+        rightMiddleTableTitle.setForeground(fgColour);
+        rightMiddleTableTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        rightTableTitle.setBackground(bgColour);
+        rightTableTitle.setForeground(fgColour);
+        rightTableTitle.setHorizontalAlignment(SwingConstants.CENTER);
 
         Object[][] data = {{"", "", ""}};
         Object[][] data2 = {{"", "", "", ""}};
@@ -243,10 +274,6 @@ public class SimView extends JFrame {
         String[] clientTableColumnsNames = new String[]{"Name", "Cash Holding (£)", "Total Client Worth"};
         String[] clientStockTableColumnsNames = new String[]{"Company", "Amount", "Worth"};
 
-        Color bgColour = Color.BLACK;
-        Color fgColour = Color.WHITE;
-        Color headerBgColour = Color.DARK_GRAY;
-        Color selectedColour = new Color(156, 0, 0, 199);
 
         tPortfolio.setBackground(bgColour);
         JTable tTableStock = setUpTable(data, stockTableColumnsNames, bgColour, fgColour, headerBgColour,
@@ -258,10 +285,24 @@ public class SimView extends JFrame {
         JTable tClientStock = setUpTable(data, clientStockTableColumnsNames, bgColour, fgColour, headerBgColour,
                 selectedColour, true, false, true);
 
-        tPortfolio.add(new JScrollPane(tTableStock), gbcConstraint(1, 1, 0, 0, 0.1, 0.1));
-        tPortfolio.add(new JScrollPane(tTableTransactions), gbcConstraint(1, 1, 1, 0, 0.1, 0.1));
-        tPortfolio.add(new JScrollPane(tClients), gbcConstraint(1, 1, 2, 0, 0.1, 0.1));
-        tPortfolio.add(new JScrollPane(tClientStock), gbcConstraint(1, 1, 3, 0, 0.1, 0.1));
+        JScrollPane sTableStock = new JScrollPane(tTableStock);
+        JScrollPane sTableTransactions = new JScrollPane(tTableTransactions);
+        JScrollPane sTableClients = new JScrollPane(tClients);
+        JScrollPane sTableClientStock = new JScrollPane(tClientStock);
+
+        leftTable.add(sTableStock, BorderLayout.CENTER);
+        leftTable.add(leftTableTitle, BorderLayout.NORTH);
+        leftMiddleTable.add(sTableTransactions, BorderLayout.CENTER);
+        leftMiddleTable.add(leftMiddleTableTitle, BorderLayout.NORTH);
+        rightMiddleTable.add(sTableClients, BorderLayout.CENTER);
+        rightMiddleTable.add(rightMiddleTableTitle, BorderLayout.NORTH);
+        rightTable.add(sTableClientStock, BorderLayout.CENTER);
+        rightTable.add(rightTableTitle, BorderLayout.NORTH);
+
+        tPortfolio.add(leftTable, gbcConstraint(1, 1, 0, 0, 0.1, 0.1));
+        tPortfolio.add(leftMiddleTable, gbcConstraint(1, 1, 1, 0, 0.1, 0.1));
+        tPortfolio.add(rightMiddleTable, gbcConstraint(1, 1, 2, 0, 0.1, 0.1));
+        tPortfolio.add(rightTable, gbcConstraint(1, 1, 3, 0, 0.1, 0.1));
 
     }
 
