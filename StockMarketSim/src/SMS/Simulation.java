@@ -49,29 +49,29 @@ public class Simulation {
             }
         });
 
-        view.getMenuLoad().setAction(new AbstractAction("Load") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Load Sim");
-                SimViewNew loadSimFrame = new SimViewNew();
-            }
-        });
-
-        view.getMenuSave().setAction(new AbstractAction("Save") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Save Sim");
-                SimViewNew saveSimFrame = new SimViewNew();
-            }
-        });
-
-        view.getMenuSaveAs().setAction(new AbstractAction("Save As") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Save As Sim");
-                SimViewNew saveAsSimFrame = new SimViewNew();
-            }
-        });
+//        view.getMenuLoad().setAction(new AbstractAction("Load") {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                System.out.println("Load Sim");
+//                SimViewNew loadSimFrame = new SimViewNew();
+//            }
+//        });
+//
+//        view.getMenuSave().setAction(new AbstractAction("Save") {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                System.out.println("Save Sim");
+//                SimViewNew saveSimFrame = new SimViewNew();
+//            }
+//        });
+//
+//        view.getMenuSaveAs().setAction(new AbstractAction("Save As") {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                System.out.println("Save As Sim");
+//                SimViewNew saveAsSimFrame = new SimViewNew();
+//            }
+//        });
     }
 
     private class ViewPlay {

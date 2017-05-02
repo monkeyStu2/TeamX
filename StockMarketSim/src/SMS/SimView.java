@@ -15,12 +15,11 @@ public class SimView extends JFrame {
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 600;
 
-    private JButton bSimulation, bDay, bWeek, bMonth, bYear, bNext, bPrev, bSave, bLoad;
+    private JButton bSimulation, bDay, bWeek, bMonth, bYear, bNext, bPrev;
+//    private JButton bSave, bLoad;
 
     private JMenuItem mNew;
-    private JMenuItem mLoad;
-    private JMenuItem mSave;
-    private JMenuItem mSaveAs;
+//    private JMenuItem mLoad, mSave, mSaveAs;
 
     private JTabbedPane tab;
     private JPanel tStock, tPortfolio;
@@ -77,8 +76,8 @@ public class SimView extends JFrame {
         // Build buttons and actions handlers
         Dimension size = new Dimension(50, 40);
         bSimulation = createButton("Simulation", bgColour, fgColour, size, new PlayHandler(), buttonB, false);
-        bSave = createButton("Save", bgColour, fgColour, size, new SaveHandler(), buttonB, false);
-        bLoad = createButton("Load", bgColour, fgColour, size, new LoadHandler(), buttonB, false);
+//        bSave = createButton("Save", bgColour, fgColour, size, new SaveHandler(), buttonB, false);
+//        bLoad = createButton("Load", bgColour, fgColour, size, new LoadHandler(), buttonB, false);
 
         size = new Dimension(50, 20);
         bDay = createButton("Day", bgColour, fgColour, size, new Switch2DayHandler(), buttonB, false);
@@ -118,14 +117,14 @@ public class SimView extends JFrame {
 
         // file menu items
         mNew = new JMenuItem("New Simulation", KeyEvent.VK_N);
-        mLoad = new JMenuItem("Load Simulation", KeyEvent.VK_L);
-        mSave = new JMenuItem("Save Simulation", KeyEvent.VK_S);
-        mSaveAs = new JMenuItem("Save As Simulation", KeyEvent.VK_A);
+//        mLoad = new JMenuItem("Load Simulation", KeyEvent.VK_L);
+//        mSave = new JMenuItem("Save Simulation", KeyEvent.VK_S);
+//        mSaveAs = new JMenuItem("Save As Simulation", KeyEvent.VK_A);
         mExit.addActionListener(e -> System.exit(0));
         mFile.add(mNew);
-        mFile.add(mLoad);
-        mFile.add(mSave);
-        mFile.add(mSaveAs);
+//        mFile.add(mLoad);
+//        mFile.add(mSave);
+//        mFile.add(mSaveAs);
         mFile.add(mExit);
 
         //graph menu items
@@ -140,12 +139,12 @@ public class SimView extends JFrame {
 
         mNew.setBackground(bgColour);
         mNew.setForeground(fgColour);
-        mLoad.setBackground(bgColour);
-        mLoad.setForeground(fgColour);
-        mSave.setBackground(bgColour);
-        mSave.setForeground(fgColour);
-        mSaveAs.setBackground(bgColour);
-        mSaveAs.setForeground(fgColour);
+//        mLoad.setBackground(bgColour);
+//        mLoad.setForeground(fgColour);
+//        mSave.setBackground(bgColour);
+//        mSave.setForeground(fgColour);
+//        mSaveAs.setBackground(bgColour);
+//        mSaveAs.setForeground(fgColour);
         mExit.setBackground(bgColour);
         mExit.setForeground(fgColour);
         mFile.setBackground(bgColour);
@@ -206,7 +205,6 @@ public class SimView extends JFrame {
         stockMarketGraph = new SimGraph();
         tStockGraph.add(stockMarketGraph, BorderLayout.CENTER);
         tStockGraph.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-        // and second to fit bottom row buttons
         tBottomStock.add(bDay, gbcConstraint(2, 1, 0, 0, 0.1, 0));
         tBottomStock.add(bWeek, gbcConstraint(2, 1, 2, 0, 0.1, 0));
         tBottomStock.add(bMonth, gbcConstraint(2, 1, 4, 0, 0.1, 0));
@@ -218,10 +216,10 @@ public class SimView extends JFrame {
         tStockGraph.add(tBottomStock, BorderLayout.SOUTH);
         tLeftButtons.add(bSimulation);
         tLeftButtons.add(Box.createVerticalStrut(20));
-        tLeftButtons.add(bSave);
+//        tLeftButtons.add(bSave);
         tLeftButtons.add(Box.createHorizontalGlue());
         tLeftButtons.add(Box.createVerticalStrut(20));
-        tLeftButtons.add(bLoad);
+//        tLeftButtons.add(bLoad);
         tLeftButtons.setBorder(b);
         tLeftButtons.setOpaque(true);
         tLeftButtons.setBackground(Color.BLACK);
@@ -351,9 +349,9 @@ public class SimView extends JFrame {
 
     public AbstractButton getBtnPlay() { return bSimulation; }
     public AbstractButton getMenuNew() { return mNew; }
-    public AbstractButton getMenuLoad() { return mLoad; }
-    public AbstractButton getMenuSave() { return mSave; }
-    public AbstractButton getMenuSaveAs() { return mSaveAs; }
+//    public AbstractButton getMenuLoad() { return mLoad; }
+//    public AbstractButton getMenuSave() { return mSave; }
+//    public AbstractButton getMenuSaveAs() { return mSaveAs; }
 
     private class PlayHandler implements ActionListener {
         private boolean clicked = false;
@@ -369,19 +367,19 @@ public class SimView extends JFrame {
         }
     }
 
-    private class SaveHandler implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("Save button pressed");
-        }
-    }
-
-    private class LoadHandler implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("Load button pressed");
-        }
-    }
+//    private class SaveHandler implements ActionListener {
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            System.out.println("Save button pressed");
+//        }
+//    }
+//
+//    private class LoadHandler implements ActionListener {
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            System.out.println("Load button pressed");
+//        }
+//    }
 
     private class Switch2DayHandler implements ActionListener {
         @Override

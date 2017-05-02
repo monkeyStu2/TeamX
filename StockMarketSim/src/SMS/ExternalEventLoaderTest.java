@@ -4,16 +4,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class TraderTest {
+public class ExternalEventLoaderTest {
 
 	@Test
-	public void stockOfferTest() {
+	public void readDataTest() {
 		fail("Not yet implemented");
-	}
-	
-	@Test
-	public void eventAlertTest(int x) {
-		
 	}
 
 }
