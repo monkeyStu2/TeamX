@@ -4,6 +4,7 @@ package SMS;
  * 
  */
 public class Company {
+    String name;
     int shares;
     float sharePrice;
     StockType stockType;
@@ -12,11 +13,12 @@ public class Company {
     }
     /**
      * Creates Company object
-     * @param shares        the amount of shares released by the company
+     * @param shares        the amount of shares issued by the company
      * @param sharePrice    the value of each share
      * @param stockType     the category of stock
      */
-    public Company(int shares, float sharePrice, StockType stockType){
+    public Company(String name, int shares, float sharePrice,StockType stockType){
+        this.name = name;
         this.shares = shares;
         this.sharePrice = sharePrice;
         this.stockType = stockType;
@@ -25,15 +27,19 @@ public class Company {
         return shares;
     }
     
-    public int getSharePrices(){
-        return shares;
+    public float getSharePrice(){
+        return sharePrice;
     }
     
     public float getCapitalisation(){
         return shares*sharePrice;
     }
 
-    public void setSharePrices(int sharePrice){
-        this.sharePrice = sharePrice;
+    public void pIncrease(float p){
+        this.sharePrice += this.sharePrice*p;
+    }
+
+    public String getName(){
+        return name;
     }
 }

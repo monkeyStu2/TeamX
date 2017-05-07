@@ -6,12 +6,11 @@ package SMS;
  */
 public class ShareBundle {
     private final Company company;
-    private final int shares;
+    private int shares;
     public ShareBundle(Company company, int shares){
         this.company = company;
         this.shares = shares;
     }
-
     public float getAssetValue(){
         return company.sharePrice * shares; 
     }
@@ -20,5 +19,8 @@ public class ShareBundle {
     }
     public int getShares() {
         return shares;
+    }
+    public void addShares(int i){
+        shares += i;
     }
 }

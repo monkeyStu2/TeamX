@@ -4,15 +4,16 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.*;
 
-public class Simulation {
+class Simulation {
     private SimView view;
-    private MarketTest model;
+    private Market model;
     private boolean activeCycle;
 
     // Test commit
-    public Simulation() {
+    Simulation() {
         view = new SimView();
-        model = new MarketTest();
+//        model = new MarketTest();
+        model = new Market();
         activeCycle = false;
         setUpAction();
     }
@@ -28,7 +29,7 @@ public class Simulation {
                 ViewPlay va = new ViewPlay();
                 if (!activeCycle) {
                     activeCycle = true;
-                    sf = executor.scheduleAtFixedRate(va.play, 0, 10, TimeUnit.MILLISECONDS);
+                    sf = executor.scheduleAtFixedRate(va.play, 0, 500, TimeUnit.MILLISECONDS);
                 } else {
                     activeCycle = false;
                     sf.cancel(true);
@@ -44,7 +45,7 @@ public class Simulation {
                 System.out.println("New Sim");
                 SimViewNew newSimFrame = new SimViewNew();
                 if (!newSimFrame.getInitialData().isEmpty() && !newSimFrame.getExternalData().isEmpty()) {
-                    model = new MarketTest(newSimFrame.getInitialData(), newSimFrame.getExternalData());
+                    //model = new Market(newSimFrame.getInitialData(), newSimFrame.getExternalData());
                 }
             }
         });
@@ -75,12 +76,9 @@ public class Simulation {
     }
 
     private class ViewPlay {
-        private int x = 0;
         Runnable play = () -> {
-            System.out.println("Test - " + x);
-            x += 1;
-            model.addData();
-            view.setDataset(model.getDataset());
+            model.cycle();
+            //view.setDataset(model.getDataset());
         };
     }
 }

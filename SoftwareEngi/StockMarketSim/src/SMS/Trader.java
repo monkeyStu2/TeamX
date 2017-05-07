@@ -13,8 +13,8 @@ import java.util.Random;
  * @author Tom
  */
 public class Trader {
-    List<Client> clientList;
-    MODE tradingMode;
+    private List<Client> clientList;
+    private MODE tradingMode;
     public enum MODE{
         PURCHASER, BALANCED,SELLER 
     }
@@ -68,6 +68,10 @@ public class Trader {
         }
         return buyRequests;
     }
+    public void processOffer(StockOffer stockOffer){
+        int clientPos = clientList.indexOf(stockOffer.getClient());
+        clientList.get(clientPos).processOffer(stockOffer);
+    }
     private List<Request> sellOffer(Client client){
         Random rn = new Random();
         switch (tradingMode) {
@@ -104,7 +108,7 @@ public class Trader {
             int randn = bagOIndex.remove((int)(rn.nextFloat()*bagOIndex.size())); 
             ShareBundle sb = client.getShareBundles().get(randn);
             if (sb.getAssetValue() > sellAmount){
-                sr.add(new Request(sb.getCompany(), (int)(sellAmount/sb.getCompany().getSharePrices()), client,  this,Request.TYPE.SELL));
+                sr.add(new Request(sb.getCompany(), (int)(sellAmount/sb.getCompany().getSharePrice()), client,  this,Request.TYPE.SELL));
                 notMetSellAmount = true;
             }else{
                 sr.add(new Request(sb.getCompany(), sb.getShares(), client, this,Request.TYPE.SELL));
@@ -125,7 +129,8 @@ public class Trader {
             total += randn;
         }
         for(int i = 0; i < companyList.size();i++){
-            int shareAmount = (int)(spendAmount*(proportion.get(i)/total))/companyList.get(i).getSharePrices();
+            float floaty = (spendAmount*(proportion.get(i)/total))/companyList.get(i).getSharePrice();
+            int shareAmount = (int)floaty;
             br.add(new Request(companyList.get(i), shareAmount, client, this, Request.TYPE.BUY));
         }
         return br;
@@ -136,5 +141,13 @@ public class Trader {
             bag.add(i);
         }
         return bag;
-    }   
+    }
+
+    public List<String> getClientNames() {
+        List<String> names = new ArrayList<>();
+        for (Client client : clientList) {
+            names.add(client.getName());
+        }
+        return names;
+    }
 }

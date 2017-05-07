@@ -48,7 +48,6 @@ public class MarketTest {
         for (int i = 0; i < dataset.getSeriesCount(); i++) {
             TimeSeries ser = dataset.getSeries(i);
             LocalDateTime ldt = LocalDateTime.of(date, time);
-            System.out.println(ldt);
             Date dateTime = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
             double value = (double) ser.getValue(ser.getItemCount() - 1) + r.nextDouble() * 2 - 1;
             ser.add(new Minute(dateTime), value);

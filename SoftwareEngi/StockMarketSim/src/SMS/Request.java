@@ -9,7 +9,7 @@ public class Request {
     private final Integer amount;//number of shares
     private final Client owner;
     private final Trader trader;
-    private TYPE type;
+    private final TYPE type;
     public enum TYPE{
         BUY, SELL
     }/**
@@ -41,4 +41,9 @@ public class Request {
     public Trader getTrader() {
         return trader;
     }
+
+    public TYPE getType() {
+        return type;
+    }
+    
 }
