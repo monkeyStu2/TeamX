@@ -9,14 +9,52 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 public class MarketTest {
 
+    private List<Trader> traders;
+    private Trader wAndGTrader;
+    private List<Company> companies;
     private TimeSeriesCollection dataset;
     private LocalTime time;
     private LocalDate date;
+
+    public MarketTest(String file) {
+        Object[] o = ExcelReader.readInitialData(file); // extract data from initialData.xlsx
+        // Object[] contain a map of clients and their shares, and list of companies
+        // clientsInfo contain a name of client, their shares and cash holding
+        // shares and cash holding are stored in same list, cash holding are the last element in the list
+        HashMap<String, ArrayList<Integer>> clientsInfo = (HashMap<String, ArrayList<Integer>>) o[0];
+        companies = (ArrayList<Company>) o[1];
+        ArrayList<Client> wAndGClients = new ArrayList<>();
+        traders = new ArrayList<>();
+
+        // iterate each client and add them to a trader
+        for(Map.Entry<String, ArrayList<Integer>> entry : clientsInfo.entrySet()) {
+            String key = entry.getKey(); // client name
+            ArrayList<Integer> value = entry.getValue(); // client shares and cash holding
+
+            ArrayList<ShareBundle> sbList = new ArrayList<>();
+            int i = 0;
+            for (Company company : companies) {
+                sbList.add(new ShareBundle(company, i)); // create a share for a client shares list
+                i++;
+            }
+            // our trader
+            if (key.equals("Norbert DaVinci") || key.equals("Justine Thyme")) {
+                wAndGClients.add(new Client(key, value.get(value.size()-1), sbList));
+            // random trader
+            } else {
+                List<Client> c = new ArrayList<>();
+                c.add(new Client(key, value.get(value.size()-1), sbList));
+                traders.add(new Trader(c, Trader.MODE.BALANCED));
+            }
+        }
+        wAndGTrader = new Trader(wAndGClients, Trader.MODE.BALANCED);
+        traders.add(wAndGTrader);
+//        traders.forEach(traders -> System.out.println(traders.getClientNames()));
+    }
 
     public MarketTest() {
         dataset = new TimeSeriesCollection();

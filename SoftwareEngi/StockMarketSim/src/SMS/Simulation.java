@@ -6,14 +6,14 @@ import java.util.concurrent.*;
 
 class Simulation {
     private SimView view;
-    private Market model;
+    private MarketTest model;
     private boolean activeCycle;
 
     // Test commit
     Simulation() {
         view = new SimView();
-//        model = new MarketTest();
-        model = new Market();
+//        model = new MarketTest("C:/Users/Robert Laptop/Documents/TeamX-master/ProvidedData/InitialDataV2.xlsx");
+        model = new MarketTest();
         activeCycle = false;
         setUpAction();
     }
@@ -29,7 +29,7 @@ class Simulation {
                 ViewPlay va = new ViewPlay();
                 if (!activeCycle) {
                     activeCycle = true;
-                    sf = executor.scheduleAtFixedRate(va.play, 0, 500, TimeUnit.MILLISECONDS);
+                    sf = executor.scheduleAtFixedRate(va.play, 0, 50, TimeUnit.MILLISECONDS);
                 } else {
                     activeCycle = false;
                     sf.cancel(true);
@@ -45,6 +45,8 @@ class Simulation {
                 System.out.println("New Sim");
                 SimViewNew newSimFrame = new SimViewNew();
                 if (!newSimFrame.getInitialData().isEmpty() && !newSimFrame.getExternalData().isEmpty()) {
+                    ExcelReader.readInitialData(newSimFrame.getInitialData());
+                    System.out.println(newSimFrame.getInitialData());
                     //model = new Market(newSimFrame.getInitialData(), newSimFrame.getExternalData());
                 }
             }
@@ -77,8 +79,8 @@ class Simulation {
 
     private class ViewPlay {
         Runnable play = () -> {
-            model.cycle();
-            //view.setDataset(model.getDataset());
+            model.addData();
+            view.setDataset(model.getDataset());
         };
     }
 }

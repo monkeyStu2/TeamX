@@ -24,10 +24,10 @@ public class Market {
 
     public Market() {
         companies = new ArrayList<>();
-        companies.add(new Company("XY Corp", 50000, 150, Company.StockType.HITECH));
-        companies.add(new Company("Evil Quack", 60000, 155, Company.StockType.FOODCOM));
-        companies.add(new Company("Mac Burger", 55000, 140, Company.StockType.HARDCOM));
-        companies.add(new Company("Anti Machine Learning", 40000, 146, Company.StockType.PROPERTY));
+        companies.add(new Company("XY Corp", 50000, 150, Company.StockType.Hitech));
+        companies.add(new Company("Evil Quack", 60000, 155, Company.StockType.Food));
+        companies.add(new Company("Mac Burger", 55000, 140, Company.StockType.Hard));
+        companies.add(new Company("Anti Machine Learning", 40000, 146, Company.StockType.Property));
         traders = new ArrayList<>();
         List<ShareBundle> sb1 = new ArrayList<>();
         sb1.add(new ShareBundle(companies.get(0), 20000));

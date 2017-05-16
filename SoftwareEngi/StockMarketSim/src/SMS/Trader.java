@@ -8,6 +8,8 @@ package SMS;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+
 /**
  *
  * @author Tom
@@ -144,10 +146,10 @@ public class Trader {
     }
 
     public List<String> getClientNames() {
-        List<String> names = new ArrayList<>();
-        for (Client client : clientList) {
-            names.add(client.getName());
-        }
-        return names;
+        return clientList.stream().map(Client::getName).collect(Collectors.toList());
+    }
+
+    public List<Client> getClients() {
+        return clientList.stream().collect(Collectors.toList());
     }
 }

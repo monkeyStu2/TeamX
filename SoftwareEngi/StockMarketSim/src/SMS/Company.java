@@ -9,7 +9,7 @@ public class Company {
     float sharePrice;
     StockType stockType;
     public enum StockType{
-        FOODCOM,HARDCOM,HITECH,PROPERTY
+        Food, Hard, Hitech, Property
     }
     /**
      * Creates Company object
@@ -33,6 +33,10 @@ public class Company {
     
     public float getCapitalisation(){
         return shares*sharePrice;
+    }
+
+    public StockType getStockType() {
+        return stockType;
     }
 
     public void pIncrease(float p){
