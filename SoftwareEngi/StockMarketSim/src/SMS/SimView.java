@@ -35,7 +35,7 @@ public class SimView extends JFrame {
 
     // Construct the frame
     public SimView() {
-        setTitle("Team-X Stock Market Simulation");
+        setTitle("Wolf & Gecko Stock Market Simulation");
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(1000, 600));
